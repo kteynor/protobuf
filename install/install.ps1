@@ -8,6 +8,7 @@ param(
 
 $install_dir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 $build_dir = "$install_dir\..\cmake\build"
+$cmake_dir = "$install_dir\..\cmake"
 
 if ($Clean) {
     # clear install dir contents
@@ -25,7 +26,7 @@ if ($Clean) {
 # generate cmake build files for cmake subdir, in a nested
 # cmake/build directory, and configure the current dir as 
 # the install prefix path
-cmake -S ..\cmake -B "$build_dir" -DCMAKE_INSTALL_PREFIX="$install_dir" -DCMAKE_CXX_STANDARD=17 -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=FALSE -Dprotobuf_UNICODE=ON
+cmake -S "$cmake_dir" -B "$build_dir" -DCMAKE_INSTALL_PREFIX="$install_dir" -DCMAKE_CXX_STANDARD=17 -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_MSVC_STATIC_RUNTIME=FALSE -Dprotobuf_UNICODE=ON
 
 # build the install target in debug and release
 cmake --build "$build_dir" --config Debug --target install
