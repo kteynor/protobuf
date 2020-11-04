@@ -1,0 +1,32 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-release:    
+    name: Build libProtobuf Release
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Build Repo
+      run: |
+        cd ./install
+        ./build.ps1 -Install:$false
+    - name: Package Artifacts
+      run: |
+        cd ./install
+        Compress-Archive -Path bin,include,lib -DestinationPath win64-prebuilt.zip
+    - name: Upload Artifacts
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./install/win64-prebuilt.zip
+        asset_name: win64-prebuilt.zip
+        asset_content_type: application/zip
